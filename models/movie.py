@@ -1,17 +1,31 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, String, Integer, ForeignKey
-from models.base_model import Base
+from sqlalchemy import ForeignKey
+from app import db
 import uuid
 
 
-class Movie(Base):
+class Movie(db.Model):
     __tablename__ = 'movie'
 
-    id = Column(UUID(as_uuid=True), primary_key=True)
-    release_year = Column(Integer, nullable=False)
-    title = Column(String(120), nullable=False)
-    wikipedia_link = Column(String(500), nullable=True)
-    director_id = Column(ForeignKey('director.id'), nullable=True)
-    origin_id = Column(ForeignKey('movie_origin.id'), nullable=True)
-    genre_id = Column(ForeignKey('genre.id'), nullable=True)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    release_year = db.Column(db.Integer, nullable=False)
+    title = db.Column(db.String(120), nullable=False)
+    wikipedia_link = db.Column(db.String(500), nullable=True)
+    plot = db.Column(db.String(), nullable=False)
+    origin_id = db.Column(ForeignKey('movie_origin.id'), nullable=True)
+    genre_id = db.Column(ForeignKey('genre.id'), nullable=True)
+
+    def __init__(
+            self,
+            release_year,
+            title,
+            wikipedia_link,
+            plot,
+            origin_id,
+            genre_id):
+        self.release_year = release_year
+        self.title = title
+        self.wikipedia_link = wikipedia_link
+        self.plot = plot
+        self.origin_id = origin_id
+        self.genre_id = genre_id

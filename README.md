@@ -10,7 +10,7 @@
 
 1. Create a blank postgres database called `balto_movies` (will work on automating in the future)
 2. Run `pipenv shell`
-3. Run `alembic upgrade head`
+3. Run `python manage.py db upgrade`
 
 ## Run the project
 

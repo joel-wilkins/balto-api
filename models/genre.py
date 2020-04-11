@@ -1,12 +1,13 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, String, Integer
-from models.base_model import Base
+from app import db
 import uuid
 
 
-class Genre(Base):
+class Genre(db.Model):
     __tablename__ = 'genre'
 
-    id = Column(UUID(as_uuid=True), primary_key=True)
-    genre = Column(String(120), nullable=False, unique=True)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    genre = db.Column(db.String(120), nullable=False, unique=True)
+
+    def __init__(self, genre: str):
+        self.genre = genre

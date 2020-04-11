@@ -1,8 +1,8 @@
-"""Initialize Database
+"""empty message
 
-Revision ID: 195f8de91913
+Revision ID: 25500a9e3f03
 Revises: 
-Create Date: 2020-04-11 10:27:04.426630
+Create Date: 2020-04-11 12:14:55.146243
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '195f8de91913'
+revision = '25500a9e3f03'
 down_revision = None
 branch_labels = None
 depends_on = None
