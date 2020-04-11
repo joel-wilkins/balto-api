@@ -1,7 +1,7 @@
 """empty message
 
 Revision ID: 25500a9e3f03
-Revises: 
+Revises:
 Create Date: 2020-04-11 12:14:55.146243
 
 """
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('first_name', sa.String(length=120), nullable=False),
     sa.Column('last_name', sa.String(length=120), nullable=False),
-    sa.Column('full_name', sa.String(length=120), nullable=False),
+    sa.Column('full_name', sa.String(length=240), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('first_name'),
     sa.UniqueConstraint('full_name'),
@@ -32,7 +32,7 @@ def upgrade():
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('first_name', sa.String(length=120), nullable=False),
     sa.Column('last_name', sa.String(length=120), nullable=False),
-    sa.Column('full_name', sa.String(length=120), nullable=False),
+    sa.Column('full_name', sa.String(length=240), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('first_name'),
     sa.UniqueConstraint('full_name'),

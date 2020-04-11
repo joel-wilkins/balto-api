@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import ForeignKey
-from app import db
+from app import db, ma
 import uuid
 
 
@@ -29,3 +29,16 @@ class Movie(db.Model):
         self.plot = plot
         self.origin_id = origin_id
         self.genre_id = genre_id
+
+
+class MovieSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'id', 'release_year', 'title', 'wikipedia_link', 'plot',
+            'origin_id', 'genre_id'
+        )
+
+    def dump_as_json(self, data):
+        from flask import jsonify
+        dumped_data = self.dump(data)
+        return jsonify(dumped_data)
