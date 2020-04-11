@@ -66,10 +66,10 @@ class CsvParserService:
 
     def __parse_and_insert_origin(self, row) -> uuid:
         origin = row['Origin/Ethnicity']
-        origin_id = self.genre_service.get_id(origin)
+        origin_id = self.origin_service.get_id(origin)
 
         if not origin_id:
-            origin_id = self.genre_service.insert(MovieOrigin(origin))
+            origin_id = self.origin_service.insert(MovieOrigin(origin))
 
         return origin_id
 
