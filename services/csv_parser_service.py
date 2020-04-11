@@ -40,13 +40,13 @@ class CsvParserService:
                 self.__parse_and_insert_row(row)
 
     def __parse_and_insert_row(self, row):
-        director_id = self.__parse_and_insert_director(row)
+        director_ids = self.__parse_and_insert_director(row)
         genre_id = self.__parse_and_insert_genre(row)
         origin_id = self.__parse_and_insert_origin(row)
         cast_member_ids = self.__parse_and_insert_cast_members(row)
 
         self.__parse_and_insert_movie(
-            row, director_id, genre_id, origin_id, cast_member_ids
+            row, director_ids, genre_id, origin_id, cast_member_ids
         )
 
     def __parse_and_insert_director(self, row) -> []:
@@ -111,7 +111,7 @@ class CsvParserService:
     def __parse_and_insert_movie(
         self,
         row,
-        director_id: uuid,
+        director_ids: [],
         genre_id: uuid,
         origin_id: uuid,
         cast_ids: []
@@ -127,11 +127,17 @@ class CsvParserService:
                 movie_title,
                 wiki_page,
                 plot,
-                director_id,
                 origin_id,
                 genre_id
             )
         )
+
+        if len(director_ids) > 0:
+            self.movie_director_service.insert_many(
+                self.movie_director_service.get_list_from_movie_and_director(
+                    movie_id, director_ids
+                )
+            )
 
         if len(cast_ids) > 0:
             self.movie_cast_member_service.insert_many(

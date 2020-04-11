@@ -8,12 +8,13 @@ class MovieDirectorService():
     def __init__(self, db):
         self.db = db
 
-    def get_list_from_movie_and_cast(
-        self, movie_id: str, director_id: []
+    def get_list_from_movie_and_director(
+        self, movie_id: str, director_ids: []
     ) -> []:
         movie_directors = []
-        for director_id in director_id:
+        for director_id in director_ids:
             movie_directors.append(MovieDirector(movie_id, director_id))
+        return movie_directors
 
     def insert_many(self, movie_directors: []) -> None:
         for movie_director in movie_directors:

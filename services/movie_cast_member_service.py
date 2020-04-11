@@ -14,6 +14,7 @@ class MovieCastMemberService():
         movie_cast_members = []
         for member_id in cast_member_ids:
             movie_cast_members.append(MovieCastMember(movie_id, member_id))
+        return movie_cast_members
 
     def insert_many(self, movie_cast_members: []) -> None:
         for movie_cast_member in movie_cast_members:

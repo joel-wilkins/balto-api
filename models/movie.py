@@ -21,13 +21,11 @@ class Movie(db.Model):
             title,
             wikipedia_link,
             plot,
-            director_id,
             origin_id,
             genre_id):
         self.release_year = release_year
         self.title = title
         self.wikipedia_link = wikipedia_link
         self.plot = plot
-        self.director_id = director_id
         self.origin_id = origin_id
         self.genre_id = genre_id
