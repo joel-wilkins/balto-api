@@ -1,11 +1,14 @@
-from flask import Flask, request, Response, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
-from werkzeug.utils import secure_filename
 from config import configure
-import os
-import logging
+from flask import Flask, request, Response
+from flask_cors import CORS
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
 from os import path
+from werkzeug.utils import secure_filename
+from webargs.flaskparser import use_args
+from request_schemas.movies_request import MoviesRequest
+import logging
+import os
 
 ALLOWED_EXTENSIONS = {'csv'}
 
@@ -14,6 +17,7 @@ configure(app)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 logger = logging.getLogger('app')
+CORS(app)
 
 from models import (
     cast_member, director, genre, movie_cast_member, movie_origin,
@@ -22,22 +26,14 @@ from models import (
 
 
 @app.route('/movies', methods=['GET'])
-def list_movies():
+@use_args(MoviesRequest(), location="query")
+def list_movies(args):
     from services.movie_service import MovieService
     from models.movie import MovieSchema
     movie_schema = MovieSchema(many=True)
     movie_service = MovieService(db)
-    page = 1
-    page_size = 100
 
-    if request.args.get('page'):
-        index = request.args.get('page')
-        if index == 0:
-            index = 1
-
-    if request.args.get('page_size'):
-        page_size = request.args.get('page_size')
-    data = movie_service.get_all(page, page_size)
+    data = movie_service.get_all(args['page'], args['page_size'])
     return movie_schema.dump_as_json(data)
 
 
