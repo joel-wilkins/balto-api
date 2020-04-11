@@ -59,6 +59,9 @@ class CsvParserService:
         director_ids = []
 
         for director in director_list:
+            if (len(director) > 240):
+                continue
+
             director_record = self.director_service.parse_from_string(
                 director.strip())
 
@@ -102,6 +105,9 @@ class CsvParserService:
         cast_ids = []
 
         for cast in cast_list:
+            if (len(cast) > 240):
+                continue
+
             cast_member = self.cast_member_service.parse_from_string(
                 cast.strip())
 
