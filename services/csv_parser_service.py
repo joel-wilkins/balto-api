@@ -67,10 +67,10 @@ class CsvParserService:
 
             director_id = self.director_service.get_id(director_record)
             if (not director_id):
-                director_id = self.director_service.insert(
-                    director_record)
+                director_id = self.director_service.insert(director_record)
 
-            director_ids.append(director_id)
+            if (not self.__has_item(director_ids, director_id)):
+                director_ids.append(director_id)
 
         return director_ids
 
@@ -112,7 +112,8 @@ class CsvParserService:
             if (not cast_member_id):
                 cast_member_id = self.cast_member_service.insert(cast_member)
 
-            cast_ids.append(cast_member_id)
+            if (not self.__has_item(cast_ids, cast_member_id)):
+                cast_ids.append(cast_member_id)
 
         return cast_ids
 
@@ -160,3 +161,10 @@ class CsvParserService:
         return string_to_sanitize.replace(', Jr.', '') \
             .replace('(unconfirmed)', '') \
             .replace(', Sr.', '')
+
+    def __has_item(self, array: [], thing_to_find) -> bool:
+        try:
+            array.index(thing_to_find)
+            return True
+        except ValueError:
+            return False
