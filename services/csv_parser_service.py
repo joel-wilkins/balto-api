@@ -55,7 +55,7 @@ class CsvParserService:
         if len(directors) == 0:
             return []
 
-        director_list = directors.split(',')
+        director_list = self.__sanitize_string(directors).split(',')
         director_ids = []
 
         for director in director_list:
@@ -98,7 +98,7 @@ class CsvParserService:
         if len(cast_members) == 0:
             return []
 
-        cast_list = cast_members.split(',')
+        cast_list = self.__sanitize_string(cast_members).split(',')
         cast_ids = []
 
         for cast in cast_list:
@@ -155,3 +155,8 @@ class CsvParserService:
             )
 
         return movie_id
+
+    def __sanitize_string(self, string_to_sanitize: str) -> str:
+        return string_to_sanitize.replace(', Jr.', '') \
+            .replace('(unconfirmed)', '') \
+            .replace(', Sr.', '')
