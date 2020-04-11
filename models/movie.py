@@ -12,7 +12,6 @@ class Movie(db.Model):
     title = db.Column(db.String(120), nullable=False)
     wikipedia_link = db.Column(db.String(500), nullable=True)
     plot = db.Column(db.String(), nullable=False)
-    director_id = db.Column(ForeignKey('director.id'), nullable=True)
     origin_id = db.Column(ForeignKey('movie_origin.id'), nullable=True)
     genre_id = db.Column(ForeignKey('genre.id'), nullable=True)
 

@@ -13,8 +13,10 @@ configure(app)
 db = SQLAlchemy(app)
 logger = logging.getLogger('app')
 
-from models import (cast_member, director, genre,
-                    movie_cast_member, movie_origin, movie)
+from models import (
+    cast_member, director, genre, movie_cast_member, movie_origin,
+    movie, movie_director
+)
 
 
 @app.route('/movies', methods=['GET'])

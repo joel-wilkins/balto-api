@@ -17,8 +17,8 @@ class CastMemberService():
         last_name = ''
 
         if len(split_name) > 1:
-            first_name = [0]
-            last_name = [-1]
+            first_name = split_name[0]
+            last_name = split_name[-1]
         else:
             first_name = last_name = cast_member_name
 

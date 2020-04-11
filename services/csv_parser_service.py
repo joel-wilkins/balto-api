@@ -9,6 +9,7 @@ from services.genre_service import GenreService
 from services.origin_service import OriginService
 from services.cast_member_service import CastMemberService
 from services.movie_cast_member_service import MovieCastMemberService
+from services.movie_director_service import MovieDirectorService
 import uuid
 
 logger = logging.getLogger("CsvParserService")
@@ -21,6 +22,7 @@ class CsvParserService:
     origin_service: OriginService = None
     cast_member_service: CastMemberService = None
     movie_cast_member_service: MovieCastMemberService = None
+    movie_director_service: MovieDirectorService = None
 
     def __init__(self, db):
         self.director_service = DirectorService(db)
@@ -29,6 +31,7 @@ class CsvParserService:
         self.origin_service = OriginService(db)
         self.cast_member_service = CastMemberService(db)
         self.movie_cast_member_service = MovieCastMemberService(db)
+        self.movie_director_service = MovieDirectorService(db)
 
     def parse_csv_into_movies(self, file_name: str):
         with open(file_name) as csv_file:
@@ -46,14 +49,26 @@ class CsvParserService:
             row, director_id, genre_id, origin_id, cast_member_ids
         )
 
-    def __parse_and_insert_director(self, row) -> uuid:
-        director = self.director_service.parse_from_string(row['Director'])
-        director.id = self.director_service.get_id(director)
+    def __parse_and_insert_director(self, row) -> []:
+        directors = row['Director']
 
-        if not director.id:
-            director.id = self.director_service.insert(director)
+        if len(directors) == 0:
+            return []
 
-        return director.id
+        director_list = directors.split(',')
+        director_ids = []
+
+        for director in director_list:
+            director_record = self.director_service.parse_from_string(
+                director.strip())
+            director_id = self.director_service.get_id(director_record)
+            if (not director_id):
+                director_id = self.director_service.insert(
+                    director_record)
+
+            director_ids.append(director_id)
+
+        return director_ids
 
     def __parse_and_insert_genre(self, row) -> uuid:
         genre = row['Genre']
@@ -79,7 +94,7 @@ class CsvParserService:
         if len(cast_members) == 0:
             return []
 
-        cast_list = cast_members.split(',').map
+        cast_list = cast_members.split(',')
         cast_ids = []
 
         for cast in cast_list:
