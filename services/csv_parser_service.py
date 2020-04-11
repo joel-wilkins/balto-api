@@ -132,6 +132,10 @@ class CsvParserService:
         cast_ids: []
     ) -> uuid:
         movie_title = row['Title']
+
+        if len(movie_title) > 120:
+            movie_title = f'{movie_title[:117]}...'
+
         release_year = row['Release Year']
         wiki_page = row['Wiki Page']
         plot = row['Plot']
