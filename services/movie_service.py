@@ -14,7 +14,8 @@ class MovieService():
         return movie.id
 
     def get(self, movie_id):
-        return Movie.query.filter(Movie.id == movie_id).scalar()
+        return self.db.session.query(Movie).filter(Movie.id == movie_id) \
+            .scalar()
 
     def get_all(self, page: int, page_size: int):
-        return Movie.query.paginate(page, page_size).items
+        return self.db.session.query(Movie).paginate(page, page_size).items
