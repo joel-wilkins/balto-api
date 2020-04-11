@@ -61,6 +61,10 @@ class CsvParserService:
         for director in director_list:
             director_record = self.director_service.parse_from_string(
                 director.strip())
+
+            if director_record is None:
+                continue
+
             director_id = self.director_service.get_id(director_record)
             if (not director_id):
                 director_id = self.director_service.insert(
@@ -100,6 +104,10 @@ class CsvParserService:
         for cast in cast_list:
             cast_member = self.cast_member_service.parse_from_string(
                 cast.strip())
+
+            if cast_member is None:
+                continue
+
             cast_member_id = self.cast_member_service.get_id(cast_member)
             if (not cast_member_id):
                 cast_member_id = self.cast_member_service.insert(cast_member)
