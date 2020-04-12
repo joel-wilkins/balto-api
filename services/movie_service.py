@@ -1,10 +1,14 @@
 from models.movie import Movie
-from sqlalchemy import func
+from sqlalchemy import func, or_
 import uuid
 from services.movie_director_service import MovieDirectorService
 from services.movie_cast_member_service import MovieCastMemberService
 from models.movie_cast_member import MovieCastMember
 from models.movie_director import MovieDirector
+from models.genre import Genre
+from models.movie_origin import MovieOrigin
+from models.director import Director
+from models.cast_member import CastMember
 
 
 class MovieService():
@@ -22,16 +26,27 @@ class MovieService():
         return self.db.session.query(Movie).filter(Movie.id == movie_id) \
             .scalar()
 
-    def get_all(self, page: int, page_size: int):
-        return self.db.session.query(Movie).order_by(
+    def get_all(self, page: int, page_size: int, query):
+        base_query = self.db.session.query(Movie)
+
+        if query and query != '':
+            base_query = self.__apply_wildcard_to_query(base_query, query)
+
+        return base_query.order_by(
             Movie.release_year.desc(),
             Movie.title
         ).paginate(page, page_size).items
 
-    def get_count(self):
-        count_query = self.db.session.query(Movie).statement.with_only_columns(
-            [func.count('id')]
+    def get_count(self, query):
+        base_query = self.db.session.query(Movie).distinct(Movie.id)
+
+        if query and query != '':
+            base_query = self.__apply_wildcard_to_query(base_query, query)
+
+        count_query = base_query.group_by(Movie).statement.with_only_columns(
+            [func.count(Movie.id)]
         )
+
         return self.db.session.execute(count_query).scalar()
 
     def insert_from_args(self, args):
@@ -102,3 +117,21 @@ class MovieService():
     def delete(self, movie: Movie):
         self.db.session.delete(movie)
         self.db.session.commit()
+
+    def __apply_wildcard_to_query(self, base_query, query):
+        wildcarded_query = f'%{query}%'
+        return base_query.join(
+            Movie.genre,
+            Movie.cast,
+            Movie.directors,
+            Movie.origin
+        ).filter(
+            or_(
+                Movie.title.ilike(wildcarded_query),
+                Genre.genre.ilike(wildcarded_query),
+                MovieOrigin.origin.ilike(wildcarded_query),
+                Director.full_name.ilike(wildcarded_query),
+                CastMember.full_name.ilike(wildcarded_query),
+                Genre.genre.ilike(wildcarded_query)
+            )
+        )

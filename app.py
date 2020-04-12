@@ -44,16 +44,19 @@ def list_movies(args):
     movie_schema = MovieSchema(many=True)
     movie_service = MovieService(db)
 
-    data = movie_service.get_all(args['page'], args['page_size'])
+    data = movie_service.get_all(
+        args['page'], args['page_size'], args['query']
+    )
     return jsonify(movie_schema.dump(data))
 
 
 @app.route('/movies/count', methods=['GET'])
-def get_movie_count():
+@parser.use_args({'query': fields.Str(missing=None)}, location="query")
+def get_movie_count(args):
     from services.movie_service import MovieService
     movie_service = MovieService(db)
 
-    return str(movie_service.get_count())
+    return str(movie_service.get_count(args['query']))
 
 
 @app.route('/movies', methods=['PUT'])
