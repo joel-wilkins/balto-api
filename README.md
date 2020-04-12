@@ -32,3 +32,4 @@ Coming soon
 6. Big one: Clean up the data ingest layer for CSV. There is a lot of junky data in the system and the naive sanitization that I performed was not enough.
 7. Set up in docker with WSGI
 8. Create a pipeline to deploy everything
+9. Better error handling everywhere
