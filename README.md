@@ -33,3 +33,4 @@ Coming soon
 7. Set up in docker with WSGI
 8. Create a pipeline to deploy everything
 9. Better error handling everywhere
+10. Add created/updated/soft-deleted capabilities to all the models
