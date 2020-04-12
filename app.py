@@ -1,13 +1,14 @@
 from config import configure
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields
 from os import path
 from werkzeug.utils import secure_filename
+from webargs import flaskparser
 from webargs.flaskparser import use_args
-from request_schemas.movies_request import MoviesRequest
+from request_schemas.movies_request import MoviesRequest, MovieUpsertRequest
 import logging
 import os
 
@@ -24,11 +25,19 @@ from models import (
     movie, cast_member, director, genre, movie_cast_member,
     movie_origin, movie_director
 )
-from flask.json import jsonify
+
+parser = flaskparser.FlaskParser()
+
+
+@parser.error_handler
+def handle_error(error, req, schema, *args, **kwargs):
+    print(args)
+    print(kwargs)
+    raise Exception('DARN')
 
 
 @app.route('/movies', methods=['GET'])
-@use_args(MoviesRequest(), location="query")
+@parser.use_args(MoviesRequest(), location="query")
 def list_movies(args):
     from services.movie_service import MovieService
     from models.movie import MovieSchema
@@ -106,8 +115,24 @@ def delete_movie(movie_id):
     return Response(status=204)
 
 
+@app.route("/movies/<movie_id>", methods=["PUT"])
+@parser.use_args(MovieUpsertRequest())
+def update_movie(args, movie_id):
+    from services.movie_service import MovieService
+    movie_service = MovieService(db)
+
+    movie_instance = movie_service.get(args['id'])
+
+    if movie_instance is None:
+        return Response(status=404)
+
+    movie_service.update(movie_instance, args)
+
+    return Response(status=200)
+
+
 @app.route("/cast")
-@use_args({'query': fields.Str(required=True)}, location="query")
+@parser.use_args({'query': fields.Str(required=True)}, location="query")
 def get_cast(args):
     from services.cast_member_service import CastMemberService
     from models.cast_member import CastSchema
@@ -120,7 +145,7 @@ def get_cast(args):
 
 
 @app.route("/directors")
-@use_args({'query': fields.Str(required=True)}, location="query")
+@parser.use_args({'query': fields.Str(required=True)}, location="query")
 def get_directors(args):
     from services.director_service import DirectorService
     from models.director import DirectorSchema

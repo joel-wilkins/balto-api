@@ -26,3 +26,10 @@ class MovieCastMemberService():
         self.db.session.add(movie_cast_member)
         self.db.session.commit()
         return movie_cast_member.id
+
+    def delete_by_movie_id(self, movie_id, commit):
+        self.db.session.query(MovieCastMember).filter(
+            MovieCastMember.movie_id == movie_id
+        ).delete()
+        if (commit):
+            self.db.session.commit()
