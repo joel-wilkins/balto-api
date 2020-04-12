@@ -1,3 +1,4 @@
+from sqlalchemy import or_
 from models.director import Director
 import uuid
 
@@ -29,6 +30,16 @@ class DirectorService():
             Director.first_name == director.first_name or
             Director.last_name == director.last_name or
             Director.full_name == director.full_name).scalar()
+
+    def get_all(self, query):
+        wildcarded_query = f'{query}%'
+        return self.db.session.query(Director).filter(
+            or_(
+                Director.first_name.ilike(wildcarded_query),
+                Director.last_name.ilike(wildcarded_query),
+                Director.full_name.ilike(wildcarded_query)
+            )
+        ).all()
 
     def insert(self, director: Director) -> uuid:
         self.db.session.add(director)

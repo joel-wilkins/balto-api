@@ -18,6 +18,9 @@ psycopg2 = "*"
 flask-migrate = "*"
 flask-script = "*"
 flask-marshmallow = "*"
+flask-cors = "*"
+webargs = "*"
+marshmallow-sqlalchemy = "*"
 
 [requires]
 python_version = "3.8"

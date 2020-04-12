@@ -1,4 +1,5 @@
 from models.movie import Movie
+from sqlalchemy import func
 import uuid
 
 
@@ -14,7 +15,14 @@ class MovieService():
         return movie.id
 
     def get(self, movie_id):
-        return Movie.query.filter(Movie.id == movie_id).scalar()
+        return self.db.session.query(Movie).filter(Movie.id == movie_id) \
+            .scalar()
 
     def get_all(self, page: int, page_size: int):
-        return Movie.query.paginate(page, page_size).items
+        return self.db.session.query(Movie).paginate(page, page_size).items
+
+    def get_count(self):
+        count_query = self.db.session.query(Movie).statement.with_only_columns(
+            [func.count('id')]
+        )
+        return self.db.session.execute(count_query).scalar()
