@@ -16,3 +16,9 @@ class GenreService():
         self.db.session.add(genre)
         self.db.session.commit()
         return genre.id
+
+    def get_all(self, query: str):
+        wildcarded_query = f'{query}%'
+        return self.db.session.query(Genre).filter(
+            Genre.genre.ilike(wildcarded_query)
+        ).all()
