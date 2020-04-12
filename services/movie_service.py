@@ -1,6 +1,8 @@
 from models.movie import Movie
 from sqlalchemy import func
 import uuid
+from services.movie_director_service import MovieDirectorService
+from services.movie_cast_member_service import MovieCastMemberService
 
 
 class MovieService():
@@ -26,3 +28,7 @@ class MovieService():
             [func.count('id')]
         )
         return self.db.session.execute(count_query).scalar()
+
+    def delete(self, movie: Movie):
+        self.db.session.delete(movie)
+        self.db.session.commit()

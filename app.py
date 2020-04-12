@@ -75,7 +75,7 @@ def upload_movie_list():
     return 'SUCCESS'
 
 
-@app.route("/movies/<movie_id>")
+@app.route("/movies/<movie_id>", methods=["GET"])
 def get_movie(movie_id):
     from services.movie_service import MovieService
     from models.movie import MovieSchema
@@ -89,6 +89,21 @@ def get_movie(movie_id):
         return Response(status=404)
 
     return jsonify(movie_schema.dump(movie_instance))
+
+
+@app.route("/movies/<movie_id>", methods=["DELETE"])
+def delete_movie(movie_id):
+    from services.movie_service import MovieService
+    movie_service = MovieService(db)
+
+    movie_instance = movie_service.get(movie_id)
+
+    if movie_instance is None:
+        return Response(status=404)
+
+    movie_service.delete(movie_instance)
+
+    return Response(status=204)
 
 
 @app.route("/cast")
@@ -113,8 +128,8 @@ def get_directors(args):
     director_service = DirectorService(db)
     director_schema = DirectorSchema(many=True)
 
-    director = director_service.get_all(args['query'])
-    return jsonify(director_schema.dump(director))
+    directors = director_service.get_all(args['query'])
+    return jsonify(director_schema.dump(directors))
 
 
 def allowed_file(filename):
