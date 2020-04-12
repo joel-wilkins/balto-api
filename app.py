@@ -74,6 +74,8 @@ def upload_movie_list():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        if not path.exists(app.config["UPLOAD_FOLDER"]):
+            os.mkdir(app.config["UPLOAD_FOLDER"])
         try:
             file.save(file_path)
             CsvParserService(db).parse_csv_into_movies(file_path)
