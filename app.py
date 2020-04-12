@@ -157,6 +157,31 @@ def get_directors(args):
     return jsonify(director_schema.dump(directors))
 
 
+@app.route("/genres")
+@parser.use_args({'query': fields.Str(required=True)}, location="query")
+def get_genres(args):
+    from services.genre_service import GenreService
+    from models.genre import GenreSchema
+
+    genre_service = GenreService(db)
+    genre_schema = GenreSchema(many=True)
+
+    genres = genre_service.get_all(args['query'])
+    return jsonify(genre_schema.dump(genres))
+
+
+@app.route("/origins")
+def get_origins():
+    from services.origin_service import OriginService
+    from models.movie_origin import OriginSchema
+
+    origin_service = OriginService(db)
+    origin_schema = OriginSchema(many=True)
+
+    origins = origin_service.get_all()
+    return jsonify(origin_schema.dump(origins))
+
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() \
         in ALLOWED_EXTENSIONS
