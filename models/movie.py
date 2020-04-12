@@ -1,7 +1,13 @@
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import ForeignKey
-from app import db, ma
+from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
+from marshmallow import fields
+from app import db
 import uuid
+from models.genre import GenreSchema
+from models.director import DirectorSchema
+from models.cast_member import CastSchema
+from models.movie_origin import OriginSchema
 
 
 class Movie(db.Model):
@@ -14,6 +20,15 @@ class Movie(db.Model):
     plot = db.Column(db.String(), nullable=False)
     origin_id = db.Column(ForeignKey('movie_origin.id'), nullable=True)
     genre_id = db.Column(ForeignKey('genre.id'), nullable=True)
+
+    genre = db.relationship('Genre')
+    origin = db.relationship('MovieOrigin')
+    cast = db.relationship(
+        'CastMember', secondary='movie_cast_member'
+    )
+    directors = db.relationship(
+        'Director', secondary='movie_director'
+    )
 
     def __init__(
             self,
@@ -31,14 +46,18 @@ class Movie(db.Model):
         self.genre_id = genre_id
 
 
-class MovieSchema(ma.Schema):
+class MovieSchema(SQLAlchemySchema):
     class Meta:
-        fields = (
-            'id', 'release_year', 'title', 'wikipedia_link', 'plot',
-            'origin_id', 'genre_id'
-        )
+        model = Movie
+        include_relationships = True
 
-    def dump_as_json(self, data):
-        from flask import jsonify
-        dumped_data = self.dump(data)
-        return jsonify(dumped_data)
+    id = auto_field()
+    release_year = auto_field()
+    title = auto_field()
+    wikipedia_link = auto_field()
+    plot = auto_field()
+    origin_id = auto_field()
+    genre = fields.Nested(GenreSchema)
+    directors = fields.Nested(DirectorSchema, many=True)
+    cast = fields.Nested(CastSchema, many=True)
+    origin = fields.Nested(OriginSchema)

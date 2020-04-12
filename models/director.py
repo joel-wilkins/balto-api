@@ -1,4 +1,5 @@
 from sqlalchemy.dialects.postgresql import UUID
+from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
 from app import db
 import uuid
 
@@ -15,3 +16,13 @@ class Director(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.full_name = full_name
+
+
+class DirectorSchema(SQLAlchemySchema):
+    class Meta:
+        model = Director
+
+    id = auto_field()
+    first_name = auto_field()
+    last_name = auto_field()
+    full_name = auto_field()

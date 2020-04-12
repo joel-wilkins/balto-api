@@ -1,4 +1,5 @@
 from sqlalchemy.dialects.postgresql import UUID
+from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
 from app import db
 import uuid
 
@@ -11,3 +12,11 @@ class MovieOrigin(db.Model):
 
     def __init__(self, origin: str):
         self.origin = origin
+
+
+class OriginSchema(SQLAlchemySchema):
+    class Meta:
+        model = MovieOrigin
+
+    id = auto_field()
+    origin = auto_field()

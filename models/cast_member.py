@@ -1,5 +1,6 @@
 from sqlalchemy.dialects.postgresql import UUID
 from app import db
+from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
 import uuid
 
 
@@ -15,3 +16,13 @@ class CastMember(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.full_name = full_name
+
+
+class CastSchema(SQLAlchemySchema):
+    class Meta:
+        model = CastMember
+
+    id = auto_field()
+    first_name = auto_field()
+    last_name = auto_field()
+    full_name = auto_field()
