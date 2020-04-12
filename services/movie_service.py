@@ -34,6 +34,39 @@ class MovieService():
         )
         return self.db.session.execute(count_query).scalar()
 
+    def insert_from_args(self, args):
+        movie = Movie(
+            args['release_year'],
+            args['title'],
+            args['wikipedia_link'],
+            args['plot'],
+            args['origin']['id'],
+            args['genre']['id']
+        )
+
+        movie_id = self.insert(movie)
+
+        cast_member_service = MovieCastMemberService(self.db)
+        director_service = MovieDirectorService(self.db)
+
+        if len(args['cast']) > 0:
+            movie_cast_records = []
+            for cast in args['cast']:
+                movie_cast_records.append(
+                    MovieCastMember(movie_id, cast['id'])
+                )
+            cast_member_service.insert_many(movie_cast_records)
+
+        if len(args['directors']) > 0:
+            movie_director_records = []
+            for director in args['directors']:
+                movie_director_records.append(
+                    MovieDirector(movie_id, director['id'])
+                )
+            director_service.insert_many(movie_director_records)
+
+        return movie
+
     def update(self, movie: Movie, args):
         movie.genre_id = args['genre']['id']
         movie.origin_id = args['origin']['id']

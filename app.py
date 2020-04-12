@@ -84,6 +84,18 @@ def upload_movie_list():
     return 'SUCCESS'
 
 
+@app.route("/movies", methods=["POST"])
+@parser.use_args(MovieUpsertRequest())
+def update_movie(args):
+    from services.movie_service import MovieService
+    from models.movie import MovieSchema
+
+    movie_service = MovieService(db)
+    new_movie = movie_service.insert_from_args(args)
+
+    return jsonify(MovieSchema().dump(new_movie))
+
+
 @app.route("/movies/<movie_id>", methods=["GET"])
 def get_movie(movie_id):
     from services.movie_service import MovieService
@@ -117,7 +129,7 @@ def delete_movie(movie_id):
 
 @app.route("/movies/<movie_id>", methods=["PUT"])
 @parser.use_args(MovieUpsertRequest())
-def update_movie(args, movie_id):
+def insert_movie(args, movie_id):
     from services.movie_service import MovieService
     movie_service = MovieService(db)
 
