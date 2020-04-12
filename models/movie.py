@@ -56,7 +56,6 @@ class MovieSchema(SQLAlchemySchema):
     title = auto_field()
     wikipedia_link = auto_field()
     plot = auto_field()
-    origin_id = auto_field()
     genre = fields.Nested(GenreSchema)
     directors = fields.Nested(DirectorSchema, many=True)
     cast = fields.Nested(CastSchema, many=True)

@@ -16,3 +16,6 @@ class OriginService():
         self.db.session.add(origin)
         self.db.session.commit()
         return origin.id
+
+    def get_all(self):
+        return self.db.session.query(MovieOrigin).all()
