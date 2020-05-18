@@ -11,6 +11,7 @@ class Director(db.Model):
     first_name = db.Column(db.String(120), unique=False, nullable=False)
     last_name = db.Column(db.String(120), unique=False, nullable=False)
     full_name = db.Column(db.String(240), unique=True, nullable=False)
+    phone_number = db.Column(db.String(240))
 
     def __init__(self, first_name, last_name, full_name):
         self.first_name = first_name
